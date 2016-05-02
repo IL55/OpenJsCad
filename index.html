@@ -71,21 +71,21 @@ function getExample(name) {
   });
 }
 </script>
-<title>OpenJsCad</title>  
+<title>OpenJsCad</title>
 </head>
 <body onload="onload()">
   <h1>OpenJsCad</h1>
 Web based solid modeling in Javascript: user editable parametric models, STL and DXF export.
 <div id="viewer"></div>
   <h2>Playground</h2>
-Try it by entering some code below. Anything you enter will be lost as soon as this page is reloaded;    
-to build your own models you should instead store them in a .jscad file on your computer 
+Try it by entering some code below. Anything you enter will be lost as soon as this page is reloaded;
+to build your own models you should instead store them in a .jscad file on your computer
 and use the <a href="processfile.html"><b>OpenJsCad parser</b></a>.
-<br><br> 
+<br><br>
 <textarea id="code">
 function main(params)
 {
-  // Main entry point; here we construct our solid: 
+  // Main entry point; here we construct our solid:
   var gear = involuteGear(
     params.numTeeth,
     params.circularPitch,
@@ -101,7 +101,7 @@ function main(params)
   return gear;
 }
 
-// Here we define the user editable parameters: 
+// Here we define the user editable parameters:
 function getParameterDefinitions() {
   return [
     { name: 'numTeeth', caption: 'Number of teeth:', type: 'int', default: 15 },
@@ -114,23 +114,23 @@ function getParameterDefinitions() {
 }
 
 /*
-  For gear terminology see: 
+  For gear terminology see:
     http://www.astronomiainumbria.org/advanced_internet_files/meccanica/easyweb.easynet.co.uk/_chrish/geardata.htm
   Algorithm based on:
     http://www.cartertools.com/involute.html
 
   circularPitch: The distance between adjacent teeth measured at the pitch circle
-*/ 
+*/
 function involuteGear(numTeeth, circularPitch, pressureAngle, clearance, thickness)
 {
   // default values:
   if(arguments.length &lt; 3) pressureAngle = 20;
   if(arguments.length &lt; 4) clearance = 0;
   if(arguments.length &lt; 4) thickness = 1;
-  
+
   var addendum = circularPitch / Math.PI;
   var dedendum = addendum + clearance;
-  
+
   // radiuses of the 4 circles:
   var pitchRadius = numTeeth * circularPitch / (2 * Math.PI);
   var baseRadius = pitchRadius * Math.cos(Math.PI * pressureAngle / 180);
@@ -153,13 +153,13 @@ function involuteGear(numTeeth, circularPitch, pressureAngle, clearance, thickne
     // first side of the tooth:
     var angle = maxangle * i / resolution;
     var tanlength = angle * baseRadius;
-    var radvector = CSG.Vector2D.fromAngle(angle);    
+    var radvector = CSG.Vector2D.fromAngle(angle);
     var tanvector = radvector.normal();
     var p = radvector.times(baseRadius).plus(tanvector.times(tanlength));
     points[i+1] = p;
-    
+
     // opposite side of the tooth:
-    radvector = CSG.Vector2D.fromAngle(angularToothWidthAtBase - angle);    
+    radvector = CSG.Vector2D.fromAngle(angularToothWidthAtBase - angle);
     tanvector = radvector.normal().negated();
     p = radvector.times(baseRadius).plus(tanvector.times(tanlength));
     points[2 * resolution + 2 - i] = p;
@@ -176,10 +176,10 @@ function involuteGear(numTeeth, circularPitch, pressureAngle, clearance, thickne
     allteeth = allteeth.unionForNonIntersecting(rotatedtooth);
   }
 
-  // build the root circle:  
+  // build the root circle:
   points = [];
   var toothAngle = 2 * Math.PI / numTeeth;
-  var toothCenterAngle = 0.5 * angularToothWidthAtBase; 
+  var toothCenterAngle = 0.5 * angularToothWidthAtBase;
   for(var i = 0; i &lt; numTeeth; i++)
   {
     var angle = toothCenterAngle + i * toothAngle;
@@ -204,6 +204,7 @@ function involuteGear(numTeeth, circularPitch, pressureAngle, clearance, thickne
 <div id="examples">
   <p>Choose another example:</p>
   <select id="example_files">
+    <option value="model.jscad">My model</option>
     <option value="gears.jscad">Involute Gears</option>
     <option value="coupler.jscad">Parametric Axis Coupler</option>
     <option value="grille.jscad">Parametric Grille</option>
@@ -219,7 +220,7 @@ function involuteGear(numTeeth, circularPitch, pressureAngle, clearance, thickne
 OpenJsCad is a 2D and 3D modeling tool similar to <a href="http://www.openscad.org/">OpenSCAD</a>,
 but web based and using Javascript language. For example:<br>
 <pre>function main() {
-  var cube = CSG.cube(); 
+  var cube = CSG.cube();
   return cube;
 }</pre>
 creates a cube with a radius of 1 and centered at the origin.
@@ -227,9 +228,9 @@ The code should always contain a main() function. The main() function should ret
 or a CAG object (for a 2D area). It's also possible to return multiple objects (a dropdown box will be shown to select the
 part to be displayed), see <a href="#renderingmultipleobjects">rendering multiple objects</a>.
 <br><br>
-3D solids can be exported as STL files, 2D areas can be exported in a DXF file. 
+3D solids can be exported as STL files, 2D areas can be exported in a DXF file.
 <br><br>
-To build your own models, create a .jscad file with your javascript code and parse the file using the 
+To build your own models, create a .jscad file with your javascript code and parse the file using the
 <a href="processfile.html">OpenJsCad parser</a>. When finished, click on Generate STL and save the result
 in an .stl file, ready to be printed on your 3d printer.
 <h2>Why use OpenJsCad?</h2>
@@ -243,23 +244,23 @@ without the need to edit the source script. See the Gears demo at the top of thi
 <li>Properties and Connectors (see below) make it very easy to attach objects to each other at predetermined
 points, even if you don't know the actual orientation or size.</li>
 <li>Extensive built in <a href="#math">support for 2D and 3D math</a> (classes for Vector2D, Vector3D, Plane, Line3D, Line2D)</li>
-<li>Debugging support: step through your code, set breakpoints, inspect variables, etc. See the 
+<li>Debugging support: step through your code, set breakpoints, inspect variables, etc. See the
     <a href="processfile.html">OpenJsCad parser</a> for details.</li>
 </ul>
 <h2>Viewer navigation</h2>
-Click and drag to rotate the model around the origin. Hold down Alt to change the axis of rotation. 
+Click and drag to rotate the model around the origin. Hold down Alt to change the axis of rotation.
 Shift+Drag moves the model around. Zoom using the mouse wheel or using the slider below the model.
 <h2>Tools, Libraries</h2>
 <ul>
-<li><a href="https://github.com/Spiritdude/OpenSCAD.jscad">OpenSCAD.jscad</a>: Wrapper functions to ease the 
+<li><a href="https://github.com/Spiritdude/OpenSCAD.jscad">OpenSCAD.jscad</a>: Wrapper functions to ease the
   translation from OpenSCAD to OpenJsCad, and command line rendering (with node.js) (by René K. Müller)</li>
 </ul>
 <h2>License</h2>
 OpenJsCad is developed by <a href="https://github.com/joostn">Joost Nieuwenhuijse</a>.
 Based on <a href="https://github.com/evanw/csg.js">initial CSG.js</a> copyright (c) 2011 <a href="https://github.com/evanw">Evan Wallace</a>.
-Uses <a href="https://github.com/evanw/lightgl.js">lightgl.js</a> by <a href="https://github.com/evanw">Evan Wallace</a> 
-and <a href="https://github.com/toaarnio">Tomi Aarnio</a> for WebGL rendering. 
-Contributions by <a href="https://github.com/alx">Alexandre Girard</a>, 
+Uses <a href="https://github.com/evanw/lightgl.js">lightgl.js</a> by <a href="https://github.com/evanw">Evan Wallace</a>
+and <a href="https://github.com/toaarnio">Tomi Aarnio</a> for WebGL rendering.
+Contributions by <a href="https://github.com/alx">Alexandre Girard</a>,
  <a href="https://github.com/tlrobinson">Tom Robinson</a>,
  <a href="https://github.com/jboecker">jboecker</a>,
  <a href="https://github.com/risacher">risacher</a>,
@@ -271,8 +272,8 @@ All code released under MIT license.
 Contributions are welcome! It's all written in Javascript, so if you know how to use it you
 know how to modify it as well.
 To contribute go to <a href="https://github.com/joostn/OpenJsCad/tree/gh-pages">OpenJsCad at GitHub (gh-pages tree)</a>,
-<a href="http://help.github.com/fork-a-repo/">create your own fork</a> and 
-<a href="http://help.github.com/send-pull-requests/">send me a pull request</a>. Note that the code is maintained 
+<a href="http://help.github.com/fork-a-repo/">create your own fork</a> and
+<a href="http://help.github.com/send-pull-requests/">send me a pull request</a>. Note that the code is maintained
 in the gh-pages branch, not the master branch. This is so that it can be accessed directly via Github pages.
 <h2>Primitive solids</h2>
 Currently the following solids are supported. The parameters are passed in an object; most
@@ -286,7 +287,7 @@ time will increase dramatically when increasing the resolution. For a sphere the
 increases quadratically with the resolution used. If the resolution parameter is omitted, the following
 two global defaults are used: CSG.defaultResolution2D and CSG.defaultResolution3D. The former
 is used for 2D curves (circle, cylinder), the latter for 3D curves (sphere, 3D expand).
-<br><br> 
+<br><br>
 <pre>
 // a cube:
 var cube = CSG.cube({
@@ -360,12 +361,12 @@ var cube = CSG.roundedCube({
 // a polyhedron (point ordering for faces: when looking at the face from the outside inwards, the points must be clockwise):
 var polyhedron = CSG.polyhedron({
    points:[ [10,10,0],[10,-10,0],[-10,-10,0],[-10,10,0], // the four points at base
-            [0,0,10]  ],                                 // the apex point 
+            [0,0,10]  ],                                 // the apex point
    faces:[ [0,1,4],[1,2,4],[2,3,4],[3,0,4],              // each triangle side
                [1,0,3],[2,1,3] ]                         // two triangles for square base
 });
 </pre>
- 
+
 <h2>CSG operations</h2>
 The 3 standard CSG operations are supported. All CSG operations return a new solid; the source solids
 are not modified:
@@ -462,11 +463,11 @@ as the 3D convolution of an object with a sphere. Contraction is the reverse: th
 is expanded, and this is then subtracted from the solid.
 <br><br>
 Expansion and contraction are very powerful ways to get an object with nice smooth corners. For example
-a rounded cube can be created by expanding a normal cube. 
+a rounded cube can be created by expanding a normal cube.
 <br><br>
 Note that these are expensive operations: spheroids are created around every corner and edge in the original
-object, so the number of polygons quickly increases. Expansion and contraction therefore are only practical for simple 
-non-curved objects. 
+object, so the number of polygons quickly increases. Expansion and contraction therefore are only practical for simple
+non-curved objects.
 <br><br>
 expand() and contract() take two parameters: the first is the radius of expansion or contraction; the second
 parameter is optional and specififies the resolution (number of polygons on spherical surfaces, per 360 degree revolution).
@@ -474,7 +475,7 @@ parameter is optional and specififies the resolution (number of polygons on sphe
 var cube1 = CSG.cube({radius: 1.0});
 var cube2 = CSG.cube({radius: 1.0}).translate([-0.3, -0.3, -0.3]);
 var csg = cube1.subtract(cube2);
-var rounded = csg.expand(0.2, 8); 
+var rounded = csg.expand(0.2, 8);
 </pre>
 
 <h2>StretchAtPlane</h2>
@@ -491,21 +492,21 @@ return gear.stretchAtPlane([0, 0.05, 1], [0, 0, 0], 30);
 <h2>Using Properties</h2>
 The 'property' property of a solid can be used to store metadata for the object,
 for example the coordinate of a specific point of interest of the solid. Whenever
-the object is transformed (i.e. rotated, scaled or translated), the properties 
+the object is transformed (i.e. rotated, scaled or translated), the properties
 are transformed with it. So the property will keep pointing to the same point
 of interest even after several transformations have been applied to the solid.
 <br><br>
 Properties can have any type, but only the properties of classes supporting
 a 'transform' method will actually be transformed. This includes CSG.Vector3D,
-CSG.Plane and CSG.Connector. In particular CSG.Connector properties (see below) 
+CSG.Plane and CSG.Connector. In particular CSG.Connector properties (see below)
 can be very useful: these can
-be used to attach a solid to another solid at a predetermined location regardless of the 
-current orientation. 
+be used to attach a solid to another solid at a predetermined location regardless of the
+current orientation.
 <br><br>
 It's even possible to include a CSG solid as a property of another solid. This could
 be used for example
 to define the cutout cylinders to create matching screw holes for an object. Those 'solid properties'
-get the same transformations as the owning solid but they will not be visible in the result 
+get the same transformations as the owning solid but they will not be visible in the result
 of CSG operations such as union().
 <br><br>
 Other kind of properties (for
@@ -523,7 +524,7 @@ cube.properties.aCorner = new CSG.Vector3D([1, 1, 1]);
 cube = cube.translate([5, 0, 0]);
 cube = cube.scale(2);
 // cube.properties.aCorner will now point to [12, 2, 2],
-// which is still the same corner point 
+// which is still the same corner point
 
 // Properties can be stored in arrays; all properties in the array
 // will be transformed if the solid is transformed:
@@ -532,7 +533,7 @@ cube.properties.otherCorners = [
   new CSG.Vector3D([-1, -1, 1])
 ];
 
-// and we can create sub-property objects; these must be of the 
+// and we can create sub-property objects; these must be of the
 // CSG.Properties class. All sub properties will be transformed with
 // the solid:
 cube.properties.myProperties = new CSG.Properties();
@@ -541,13 +542,13 @@ cube.properties.myProperties.someProperty = new CSG.Vector3D([-1, -1, -1]);
 For an example checkout the Servo motor example.
 
 <h2>Connectors</h2>
-The CSG.Connector class is intended to facilitate 
+The CSG.Connector class is intended to facilitate
 attaching two solids to each other at a predetermined
-location and orientation. 
+location and orientation.
 For example suppose we have a CSG solid depicting a servo motor
 and a solid of a servo arm: by defining a Connector property for each of them, we
 can easily attach the servo arm to the servo motor at the correct position
-(i.e. the motor shaft) and orientation (i.e. arm perpendicular to the shaft) 
+(i.e. the motor shaft) and orientation (i.e. arm perpendicular to the shaft)
 even if we don't know their current position and orientation
 in 3D space.<br><br>
 In other words Connector give us the freedom to rotate and translate objects at will without the need
@@ -557,7 +558,7 @@ shapes, only the names of the connector properties.
 <br><br>
 A CSG.Connector consist of 3 properties:<br>
 <b>point</b>: a CSG.Vector3D defining the connection point in 3D space<br>
-<b>axis</b>: a CSG.Vector3D defining the direction vector of the connection 
+<b>axis</b>: a CSG.Vector3D defining the direction vector of the connection
 (in the case of the servo motor example it would point in the direction of the shaft)<br>
 <b>normal</b>: a CSG.Vector3D direction vector somewhat perpendicular to axis; this
 defines the &quot;12 o'clock&quot; orientation of the connection.
@@ -591,16 +592,16 @@ cube1 = cube1.translate([3.1, 2, 0]);
 
 // Now attach cube2 to cube 1:
 cube2 = cube2.connectTo(
-  cube2.properties.myConnector, 
-  cube1.properties.myConnector, 
-  true,   // mirror 
+  cube2.properties.myConnector,
+  cube1.properties.myConnector,
+  true,   // mirror
   0       // normalrotation
 );
 
 // Or alternatively:
 var matrix = cube2.properties.myConnector.getTransformationTo(
-  cube1.properties.myConnector, 
-  true,   // mirror 
+  cube1.properties.myConnector,
+  true,   // mirror
   0       // normalrotation
 );
 cube2 = cube2.transform(matrix);
@@ -617,10 +618,10 @@ an array with two CSG.Vector3Ds specifying the minimum x,y,z coordinate and the 
 <br><br>
 lieFlat() lays an object onto the z=0 surface, in such a way that the z-height is minimized and it is centered around
 the z axis.
-This can be useful for CNC milling: it will transform a part of an object into the space 
+This can be useful for CNC milling: it will transform a part of an object into the space
 of the stock material during milling. Or for 3D printing: it is laid in such a way that it can be printed with
 minimal number of layers.
-Instead of lieFlat() the function getTransformationToFlatLying() can be used, which returns a CSG.Matrix4x4 for the 
+Instead of lieFlat() the function getTransformationToFlatLying() can be used, which returns a CSG.Matrix4x4 for the
 transformation. Or use getTransformationAndInverseTransformationToFlatLying() to get both the forward transformation
 and the reverse transformation.
 <pre>
@@ -660,7 +661,7 @@ variant of CSG. Arbitrary shapes can be constructed through CAG.fromPoints(), or
 CAG.rectangle() or CAG.roundedRectangle() can be used. Most of the operations for 3D CSG solids are defined for 2D CAG shapes
 as well:
 <ul>
-  <li>union, subtract, intersect</li> 
+  <li>union, subtract, intersect</li>
   <li>translate, scale, rotate, mirror. For rotation rotateZ() should be used, which rotates about the origin.</li>
   <li>expand(), contract()</li>
 </ul>
@@ -668,10 +669,10 @@ CAG shapes can be converted into a 3D solid through extrusion:
 <ul>
 <li>The extrude() function
 places the 2D area onto the 3D z=0 plane, and extrudes in the specified direction. Extrusion can be done with an optional
-twist. This rotates the solid around the z axis (and not necessariy around the extrusion axis) during extrusion.  
+twist. This rotates the solid around the z axis (and not necessariy around the extrusion axis) during extrusion.
 The total degrees of rotation is specified in the twistangle parameter, and twiststeps determine the number of steps
 between the bottom and top surface.</li>
-<li>To extrude in an arbitrary plane in 3D space, use extrudeInOrthonormalBasis(orthonormalbasis, depth [, options]). 
+<li>To extrude in an arbitrary plane in 3D space, use extrudeInOrthonormalBasis(orthonormalbasis, depth [, options]).
 An orthonormal basis is a combination of a plane and a right-hand vector (read more about orthonormal bases below).
 depth is the extrusion thickness. By default this extrudes asymmetrically, extending from the plane. Currently one option is supported:
 {symmetrical: true}, which causes the extrusion to be done symmetrically in two directions about the plane.
@@ -683,9 +684,9 @@ Y coordinate is mapped to the 3D axis specified by axis2. For example, extrudeIn
 </ul>
 A 3D solid can be converted back to a 2D CAG using sectionCut() and projectToOrthoNormalBasis().
 sectionCut() cuts the solid by a plane and returns the 2D intersection as a CAG object.
-projectToOrthoNormalBasis() works similarly but instead of cutting by a thin plane, it can be seen as 
+projectToOrthoNormalBasis() works similarly but instead of cutting by a thin plane, it can be seen as
 the projection of the solid onto a plane
-using a distant light source; the result is a CAG representing the shadow of the object. 
+using a distant light source; the result is a CAG representing the shadow of the object.
 Both functions take a CSG.OrthoNormalBasis as the argument. An orthonormal basis is a combination of a plane and
 a right-hand vector (read more about orthonormal bases below).
 <br><br>
@@ -716,11 +717,11 @@ shape=shape.scale([0.7, 0.9]);
 // And extrude. This creates a CSG solid:
 var extruded = shape.extrude({
   offset: [0.5, 0, 10],   // direction for extrusion
-  twistangle: 30,       // top surface is rotated 30 degrees 
+  twistangle: 30,       // top surface is rotated 30 degrees
   twiststeps: 10        // create 10 slices
 });
 
-// extrude such that the 2D x coordinate maps to the 3D negated z coordinate, 
+// extrude such that the 2D x coordinate maps to the 3D negated z coordinate,
 // and the 2D y coordinate maps to the 3D x coordinate:
 var extruded2 = shape.extrudeInPlane("-Z","X", 10);
 
@@ -740,7 +741,7 @@ var cag = cube2d.sectionCut(z0basis);
 var cag = cube2d.projectToOrthoNormalBasis(z0basis);
 </pre>
 Using a CNC router it's impossible to cut out a true sharp inside corner. The inside corner
-will be rounded due to the radius of the cutter. The CAG.overCutInsideCorners(radius) function compensates for this by creating 
+will be rounded due to the radius of the cutter. The CAG.overCutInsideCorners(radius) function compensates for this by creating
 an extra cutout at each inner corner so that the actual cut out shape will be at least as large
 as needed:
 <pre>
@@ -807,14 +808,14 @@ var curvedpath = CSG.Path2D.arc({
 // to create an elliptical arc:
 //      .xradius
 //      .yradius
-//      .xaxisrotation   // the rotation (in degrees) of the x axis of the ellipse with respect 
+//      .xaxisrotation   // the rotation (in degrees) of the x axis of the ellipse with respect
 //                       // to the x axis of our coordinate system
 // this still leaves 4 possible arcs between the two given points. The following two flags select which one we draw:
-//      .clockwise       // = true | false (default is false). Two of the 4 solutions draw clockwise with respect to 
+//      .clockwise       // = true | false (default is false). Two of the 4 solutions draw clockwise with respect to
 //                       // the center point, the other 2 counterclockwise
-//      .large           // = true | false (default is false). Two of the 4 solutions are an arc longer than 180 
+//      .large           // = true | false (default is false). Two of the 4 solutions are an arc longer than 180
 //                       // degrees, the other two are <= 180 degrees
-var curvedpath2 = new CSG.Path2D([[0,0], [10,0]]); 
+var curvedpath2 = new CSG.Path2D([[0,0], [10,0]]);
 // create an elliptical arc from [10,0] to [15,0]:
 curvedpath2 = curvedpath2.appendArc([15,0], {
   xradius: 4,
@@ -839,21 +840,21 @@ return csg;
 Smooth 2D shapes can be constructed using CSG.Path2D's appendBezier() method. A Bézier curve is a smooth line between
 two endpoints, guided by control points. The curve in general only passes through the endpoints. The intermediate control points guide the
 curve in a certain direction but the curve in general does not go through the intermediate control points.
-In vector image editing applications (such as Inkscape) usually cubic Bézier are used: such a curve has two control points inbetween the 
+In vector image editing applications (such as Inkscape) usually cubic Bézier are used: such a curve has two control points inbetween the
 two endpoints. But in fact appendBezier() supports any order Bézier curve.
 <pre>
 path2d.appendBezier(controlpoints[, options]) - create a single Bézier segment
 
-controlpoints: an array of control points. Each control point is a 2d coordinate (can be an [x,y] array 
+controlpoints: an array of control points. Each control point is a 2d coordinate (can be an [x,y] array
   or a CSG.Vector2D). The Bézier curve starts at the last point in the existing path2d (hence path2d must
   not be empty), and ends at the last given control point. Other control points are intermediate control points.
-  The first control point may be null. In that case a smooth transition is ensured: the null control 
+  The first control point may be null. In that case a smooth transition is ensured: the null control
   point is replaced by the second last control point of the previous Bézier curve mirrored into the
-  starting point of this curve. In other words the incoming gradient matches the outgoing gradient at 
+  starting point of this curve. In other words the incoming gradient matches the outgoing gradient at
   the current starting point.
 
 options: an optional object. Currently only one option is supported:
-  resolution: controls the smoothness of the curve: at least this number of segments will be used per 
+  resolution: controls the smoothness of the curve: at least this number of segments will be used per
   360 degree rotation. If omitted, CSG.defaultResolution2D will be used.
 </pre>
 An example:
@@ -939,7 +940,7 @@ To do so, add a function getParameterDefinitions() to your .jscad source. This f
 an array with parameter definitions. Currently 6 parameters types are supported: float, int, text, longtext, bool and choice.
 The user edited values of the parameters will be supplied as an object parameter to the main() function of your .jscad file.
 <br><br>
-A float, int, bool or text parameter is created by including the following object in the array returned by getParameterDefinitions(): 
+A float, int, bool or text parameter is created by including the following object in the array returned by getParameterDefinitions():
 <pre>{
   name: 'width',
   type: 'float',                      // or 'text', 'int', 'longtext', 'bool'
@@ -947,7 +948,7 @@ A float, int, bool or text parameter is created by including the following objec
   // 'default': 1.23                  // this is still supported for backward compatibility but deprecated ('default' is a Javascript keyword)
   caption: 'Width of the thingy:',    // optional, displayed left of the input field
                                       // if omitted, the 'name' is displayed (i.e. 'width')
-}</pre> 
+}</pre>
 A 'choice' parameter is created using the following object:
 <pre>{
   name: 'shape',
@@ -966,42 +967,42 @@ function main(params)
 {
   // custom error checking:
   if(params.width <= 0) throw new Error("Width should be positive!");
-  
+
   if(params.shape == "TRI")
   {
     // do something
   }
 }
 </pre>
- 
+
 A complete example. Copy/paste it into the Playground at the top of this page to see how it works:
 <pre>
 function getParameterDefinitions() {
   return [
     {
-      name: 'width', 
-      type: 'float', 
+      name: 'width',
+      type: 'float',
       initial: 10,
-      caption: "Width of the cube:", 
+      caption: "Width of the cube:",
     },
     {
-      name: 'height', 
-      type: 'float', 
+      name: 'height',
+      type: 'float',
       initial: 14,
-      caption: "Height of the cube:", 
+      caption: "Height of the cube:",
     },
     {
-      name: 'depth', 
-      type: 'float', 
+      name: 'depth',
+      type: 'float',
       initial: 7,
-      caption: "Depth of the cube:", 
+      caption: "Depth of the cube:",
     },
     {
-      name: 'rounded', 
+      name: 'rounded',
       type: 'choice',
       caption: 'Round the corners?',
       values: [0, 1],
-      captions: ["No thanks", "Yes please"], 
+      captions: ["No thanks", "Yes please"],
       initial: 1,
     },
   ];
@@ -1026,7 +1027,7 @@ Or see the Involute Gears example for another example of interactive parameters.
 In particular when laser cutting or CNC machining, an artwork often consists of multiple objects that will be machined separately.
 Usually the model is designed as a whole, and then the partial objects are created from the complete model.
 To facilitate this it's possible to return multiple objects from the main() function. This avoids
-the need to render the jscad file multiple times to get the STL or DXF file for each part. Returning multiple objects 
+the need to render the jscad file multiple times to get the STL or DXF file for each part. Returning multiple objects
 can be done simply by returning an array of CSG and/or CAG objects. Alternatively each object can be given a default file
 name and a caption by returning an object as follows:
 <pre>
@@ -1074,24 +1075,24 @@ CSG.OrthoNormalBasis.Z0Plane() creates an orthonormal basis for the z=0 plane. T
 into the 2D (xx, yy) coordinates, or vice versa from (xx, yy) into (xx, yy, 0).
 <br><br>
 CSG.OrthoNormalBasis.GetCartesian(axis1, axis2) creates an orthonormal basis for the standard XYZ planes.
-axis1 and axis 2 are one of ["X","Y","Z","-X","-Y","-Z"]. The orthonormal basis is constructed such that the 2D x coordinate 
+axis1 and axis 2 are one of ["X","Y","Z","-X","-Y","-Z"]. The orthonormal basis is constructed such that the 2D x coordinate
 is mapped to the 3D axis specified by axis1, and the 2D y coordinate is mapped to the 3D axis specified by axis2.
 <br>
-For example: CSG.OrthoNormalBasis.GetCartesian("-Y","Z") will return an orthonormal basis where the 2D X axis maps to the 
+For example: CSG.OrthoNormalBasis.GetCartesian("-Y","Z") will return an orthonormal basis where the 2D X axis maps to the
 3D negated Y axis, and the 2D Y axis maps to the 3D Z axis.
 <br>
 CSG.OrthoNormalBasis.GetCartesian("X","Y") is the same as CSG.OrthoNormalBasis.Z0Plane()
 <br><br>
 Use to2D() and line3Dto2D() to convert from the 3D space to the 2D plane. Use to3D() and line2Dto3D()
-to convert the other way. 
+to convert the other way.
 <br><br>
-getProjectionMatrix() gives the projection matrix to transform into the orthonormal basis. 
+getProjectionMatrix() gives the projection matrix to transform into the orthonormal basis.
 getInverseProjectionMatrix() gives the matrix to transform back into the original basis.
 <pre>
 // construct a plane:
 var plane = CSG.Plane.fromNormalAndPoint([1,1,0], [0,0,1]);
 var orthobasis = new CSG.OrthoNormalBasis(plane);
-// or if we would like a specific right hand vector: 
+// or if we would like a specific right hand vector:
 // var orthobasis = new CSG.OrthoNormalBasis(plane, [0,0,1]);
 
 var point3d = new CSG.Vector3D(1,5,7);
@@ -1100,7 +1101,7 @@ var projected = orthobasis.to3D(point2d);
 </pre>
 
 <h2>Getting features (volume and area)</h2>
-The volume and surface area of a solid can be calculated using getFeatures(). 
+The volume and surface area of a solid can be calculated using getFeatures().
 For performance reasons, the function is designed such that it can calculate multiple features in a single pass.
 <pre>
 function main() {
@@ -1113,7 +1114,7 @@ function main() {
   var volume = features[0];
   var area = features[1];
 
-  OpenJsCad.log("volume: "+volume+"; area: "+area);   // volume: 8; area: 24 
+  OpenJsCad.log("volume: "+volume+"; area: "+area);   // volume: 8; area: 24
   return cube;
 }
 </pre>
@@ -1122,7 +1123,7 @@ function main() {
 Solids can be given a color using the setColor() function. setColor() expects an array with 3 or 4
 elements [r, g, b, [alpha]]. Beware: this returns a new solid,
 the original solid is not modified! Faces of the solid will keep their original color when doing
-CSG operations (union() etc). Color values range between 0.0 and 1.0 (not 255).  
+CSG operations (union() etc). Color values range between 0.0 and 1.0 (not 255).
 <pre>
 var cube1 = CSG.cube({radius: 10});
 cube1 = cube1.setColor([0.5, 0, 0]);
@@ -1199,13 +1200,13 @@ var vec = CSG.Vector2D.fromAngleRadians(radians);  // returns a vector at the sp
 var m1 = new CSG.Matrix4x4();          // unity matrix
 var m2 = new CSG.Matrix4x4( [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] );
   // elements are passed in row order
-var result = m1.plus(m2); 
+var result = m1.plus(m2);
 var result = m1.minus(m2);
 var result = m1.multiply(m2);
 // matrix vector multiplication (vectors are padded with zeroes to get a 4x1 vector):
-var vec3d = m1.rightMultiply1x3Vector(vec3d);  // matrix * vector 
+var vec3d = m1.rightMultiply1x3Vector(vec3d);  // matrix * vector
 var vec3d = m1.leftMultiply1x3Vector(vec3d);   // vector * matrix
-var vec2d = m1.rightMultiply1x2Vector(vec2d);  // matrix * vector 
+var vec2d = m1.rightMultiply1x2Vector(vec2d);  // matrix * vector
 var vec2d = m1.leftMultiply1x2Vector(vec2d);   // vector * matrix
 // common transformation matrices:
 var m = CSG.Matrix4x4.rotationX(degrees);      // matrix for rotation about X axis
@@ -1220,9 +1221,9 @@ var transform = CSG.Matrix4x4.rotationX(20).multiply(CSG.Matrix4x4.rotationY(30)
 // Use a CSG solid's transform() method to apply the transformation to a CSG solid
 
 // ------------ Plane --------------------------
-// a 3D plane is represented by a normal vector (should have unit length) and a distance from the origin w 
+// a 3D plane is represented by a normal vector (should have unit length) and a distance from the origin w
 // the plane passes through normal.times(w)
-var plane1 = new CSG.Plane(normal, w);         
+var plane1 = new CSG.Plane(normal, w);
 // Or we can construct a plane from 3 points:
 var plane2 = CSG.Plane.fromPoints(p1, p2, p3);
 // Or from a normal vector and 1 point:
