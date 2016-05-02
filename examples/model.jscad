@@ -2,10 +2,10 @@
 // Here we define the user editable parameters:
 function getParameterDefinitions() {
   return [
-    { name: 'cylRadius1', caption: 'Cylinder radius small:', type: 'float', default: 7 },
-    { name: 'cylRadius2', caption: 'Cylinder radius big:', type: 'float', default: 8 },
-    { name: 'cylLength1', caption: 'Cylinder length', type: 'float', default: 15 },
-    { name: 'quality', caption: 'quality', type: 'int', default: 32 }
+    { name: 'cylRadius1', caption: 'Radius small:', type: 'float', default: 7 },
+    { name: 'cylRadius2', caption: 'Radius big:', type: 'float', default: 8 },
+    { name: 'cylLength1', caption: 'Length', type: 'float', default: 15 },
+    { name: 'quality', caption: 'Quality', type: 'int', default: 32 }
   ];
 }
 
